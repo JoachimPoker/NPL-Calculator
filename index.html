@@ -1,0 +1,191 @@
+<head>
+  <style>
+    /* General Styling */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .band {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      margin: auto;
+    }
+
+    h2, h3 {
+      color: #333;
+      text-align: center;
+    }
+
+    /* Input Section */
+    .columns {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .column {
+      flex: 1;
+      min-width: 250px;
+      text-align: center;
+    }
+
+    input {
+      width: 80%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    /* Button Styling */
+    .leaderboard-btn {
+      background: #007bff;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: bold;
+      display: inline-block;
+      width: 50%;
+      margin: auto;
+      transition: background 0.3s ease;
+    }
+
+    .leaderboard-btn:hover {
+      background: #0056b3;
+    }
+
+    /* Table Styling */
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      display: none; /* Hide table until calculation */
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    th {
+      background: #007bff;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      .columns {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .column {
+        width: 100%;
+      }
+
+      input {
+        width: 90%;
+      }
+
+      .leaderboard-btn {
+        width: 90%;
+      }
+
+      /* Enable horizontal scrolling for table */
+      .table-container {
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="band points-calc-band" id="points-calculated">
+    <div class="inner-content">
+      <div class="columns">
+        <div class="column">
+          <h2> How are points calculated? </h2>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <p> Use our calculator to see how many points you have earned in a particular tournament. <br><br><b>YOU MUST FINISH IN THE MONEY TO EARN NPL POINTS.</b></p>
+        </div>
+      </div>
+      <div class="dotted-line"></div>
+
+      <div class="columns">
+        <div class="column">
+          <h3> Enter your buy-in ( £ / € ) </h3>
+          <input type="number" class="buy-in" value="30" name="buy-in" min="0">
+        </div>
+        <div class="column">
+          <h3> Number of Entries </h3>
+          <input type="number" class="entries" min="1" value="5" name="entries">
+        </div>
+        <div class="column">
+          <h3> Places Paid </h3>
+          <input type="number" class="places-paid" min="1" value="10" name="places-paid">
+        </div>
+      </div>
+
+      <div class="columns">
+        <div class="column">
+          <div class="leaderboard-btn" onclick="calculatePoints()">Calculate</div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table id="points-table" class="table">
+          <thead>
+            <tr class="thead">
+              <th>Position</th>
+              <th>Points</th>
+            </tr>
+          </thead>
+          <tbody class="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function calculatePoints() {
+      var placesPaid = parseInt(document.querySelector('.places-paid').value);
+      var entries = parseInt(document.querySelector('.entries').value);
+      var buyIn = parseFloat(document.querySelector('.buy-in').value);
+      var table = document.getElementById("points-table");
+      var tableBody = document.querySelector("#points-table .tbody");
+
+      // Clear previous results
+      tableBody.innerHTML = "";
+
+      for (var i = 1; i <= placesPaid; i++) {
+        var points = (Math.sqrt(entries) / Math.sqrt(i)) * 
+                     (0.6 + Math.log10(0.025 * buyIn + 0.25)) + 5;
+
+        var row = tableBody.insertRow();
+        row.insertCell(0).innerHTML = i;
+        row.insertCell(1).innerHTML = points.toFixed(2);
+      }
+
+      // Show table after calculation
+      table.style.display = "table";
+    }
+  </script>
+</body>
