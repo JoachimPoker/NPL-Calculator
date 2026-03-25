@@ -153,9 +153,15 @@
       // Calculate points for each paid position
       for (var i = 1; i <= placesPaid; i++) {
         var points = (Math.sqrt(entries) / Math.sqrt(i)) * (0.6 + Math.log10(0.025 * buyIn + 0.25)) + 5;
+        
+        // Multiply by 100, round down, then divide by 100. 
+        // Number.EPSILON prevents javascript floating-point math errors.
+        var roundedDownPoints = Math.floor((points + Number.EPSILON) * 100) / 100;
+
         var row = tbody.insertRow();
         row.insertCell(0).textContent = i;
-        row.insertCell(1).textContent = points.toFixed(2);
+        // Keep toFixed(2) here so whole numbers still show as .00
+        row.insertCell(1).textContent = roundedDownPoints.toFixed(2);
       }
 
       // Show table
